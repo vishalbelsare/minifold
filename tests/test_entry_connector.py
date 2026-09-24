@@ -4,33 +4,28 @@
 # This file is part of the minifold project.
 # https://github.com/nokia/minifold
 
-__author__     = "Marc-Olivier Buob"
-__maintainer__ = "Marc-Olivier Buob"
-__email__      = "marc-olivier.buob@nokia-bell-labs.com"
-__copyright__  = "Copyright (C) 2018, Nokia"
-__license__    = "BSD-3"
+from pprint import pformat
+from minifold.binary_predicate import BinaryPredicate
+from minifold.entries_connector import EntriesConnector
+from minifold.log import Log
+from minifold.query import Query
 
-from pprint                         import pformat
-
-from minifold.binary_predicate      import BinaryPredicate
-from minifold.entries_connector     import EntriesConnector
-from minifold.log                   import Log
-from minifold.query                 import Query
 
 Log.enable_print = True
 
 ENTRIES = [
-    {'a' : 1,   'b' : 2,   'c' : 3},
-    {'a' : 10,  'b' : 20,  'c' : 30},
-    {'a' : 100, 'b' : 200, 'c' : 300},
-    {'a' : 100, 'b' : 200, 'd' : 400},
+    {'a': 1, 'b': 2, 'c': 3},
+    {'a': 10, 'b': 20, 'c': 30},
+    {'a': 100, 'b': 200, 'c': 300},
+    {'a': 100, 'b': 200, 'd': 400},
 ]
+
 
 def test_query_select_where():
     entries_connector = EntriesConnector(ENTRIES)
     q = Query(
-        attributes = ["a", "c", "d"],
-        filters    = BinaryPredicate(
+        attributes=["a", "c", "d"],
+        filters=BinaryPredicate(
             BinaryPredicate("a", "<=", 100),
             "&&",
             BinaryPredicate("b", ">", 20)
@@ -43,29 +38,30 @@ def test_query_select_where():
         {'a': 100, 'c': None, 'd': 400}
     ]
 
+
 def test_offset_limit():
     entries_connector = EntriesConnector(ENTRIES)
     attributes = ["a", "b", "c"]
     for offset in range(len(ENTRIES)):
         for limit in range(len(ENTRIES)):
             q = Query(
-                attributes = attributes,
-                offset     = offset,
-                limit      = limit
+                attributes=attributes,
+                offset=offset,
+                limit=limit
             )
             Log.debug(q)
             result = entries_connector.query(q)
             Log.debug(pformat(result))
 
-            assert len(result) == min(limit, len(ENTRIES) - offset),\
-                "Invalid #entries for %s:\n%s" % (str(q), pformat(result))
+            assert len(result) == min(limit, len(ENTRIES) - offset), (
+                f"Invalid #entries for {q}:\n"
+                f"{pformat(result)}"
+            )
             expected = [
-                {k : entry.get(k) for k in attributes} \
-                for entry in ENTRIES[offset : offset + limit]
+                {k: entry.get(k) for k in attributes}
+                for entry in ENTRIES[offset: offset + limit]
             ]
-            assert result == expected, """
-                Got      : %s\n
-                Expected : %s\n
-            """ % (result, expected)
-
-
+            assert result == expected, f"""
+                Got      : {result}\n
+                Expected : {expected}\n
+            """

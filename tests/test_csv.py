@@ -4,16 +4,12 @@
 # This file is part of the minifold project.
 # https://github.com/nokia/minifold
 
-__author__     = "Marc-Olivier Buob"
-__maintainer__ = "Marc-Olivier Buob"
-__email__      = "marc-olivier.buob@nokia-bell-labs.com"
-__copyright__  = "Copyright (C) 2018, Nokia"
-__license__    = "BSD-3"
+import io
+import os
+import sys
 
-import io, os, sys
-
-from minifold.csv       import CsvConnector, CsvModeEnum
-from minifold.query     import Query
+from minifold.csv import CsvConnector, CsvModeEnum
+from minifold.query import Query
 
 CSV_STRING = """col1,col2,col3
 1,2,3
@@ -25,36 +21,66 @@ DELIMITER = ","
 QUOTECHAR = "\""
 
 EXPECTED = [
-    {"col1" : "1",    "col2" : "2",     "col3" : "3"},
-    {"col1" : "1111", "col2" : "22222", "col3" : "333"},
-    {"col1" : "11,1", "col2" : "222",   "col3" : "333"},
+    {"col1": "1", "col2": "2", "col3": "3"},
+    {"col1": "1111", "col2": "22222", "col3": "333"},
+    {"col1": "11,1", "col2": "222", "col3": "333"},
 ]
 
 CSV_FILENAME = os.path.join(sys.path[0], "data.csv")
 
+
 def test_csv_string():
-    connector = CsvConnector(CSV_STRING, delimiter=DELIMITER, quotechar=QUOTECHAR, mode=CsvModeEnum.STRING)
+    connector = CsvConnector(
+        CSV_STRING,
+        delimiter=DELIMITER,
+        quotechar=QUOTECHAR,
+        mode=CsvModeEnum.STRING
+    )
     obtained = connector.query(Query())
     assert obtained == EXPECTED
+
 
 def test_csv_stringio():
     stream = io.StringIO(CSV_STRING)
-    connector = CsvConnector(stream, delimiter=DELIMITER, quotechar=QUOTECHAR, mode=CsvModeEnum.TEXTIO)
+    connector = CsvConnector(
+        stream,
+        delimiter=DELIMITER,
+        quotechar=QUOTECHAR,
+        mode=CsvModeEnum.TEXTIO
+    )
     obtained = connector.query(Query())
     assert obtained == EXPECTED
+
 
 def test_csv_textiowrapper():
     with open(CSV_FILENAME) as stream:
-        connector = CsvConnector(stream, delimiter=DELIMITER, quotechar=QUOTECHAR, mode=CsvModeEnum.TEXTIO)
+        connector = CsvConnector(
+            stream,
+            delimiter=DELIMITER,
+            quotechar=QUOTECHAR,
+            mode=CsvModeEnum.TEXTIO
+        )
         obtained = connector.query(Query())
         assert obtained == EXPECTED
 
+
 def test_csv_filename():
-    connector = CsvConnector(CSV_FILENAME, delimiter=DELIMITER, quotechar=QUOTECHAR, mode=CsvModeEnum.FILENAME)
+    connector = CsvConnector(
+        CSV_FILENAME,
+        delimiter=DELIMITER,
+        quotechar=QUOTECHAR,
+        mode=CsvModeEnum.FILENAME
+    )
     obtained = connector.query(Query())
     assert obtained == EXPECTED
 
+
 def test_csv_attributes():
     stream = io.StringIO(CSV_STRING)
-    connector = CsvConnector(stream, delimiter=DELIMITER, quotechar=QUOTECHAR, mode=CsvModeEnum.TEXTIO)
+    connector = CsvConnector(
+        stream,
+        delimiter=DELIMITER,
+        quotechar=QUOTECHAR,
+        mode=CsvModeEnum.TEXTIO
+    )
     assert connector.attributes("") == {"col1", "col2", "col3"}

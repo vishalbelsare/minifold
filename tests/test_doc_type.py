@@ -4,21 +4,22 @@
 # This file is part of the minifold project.
 # https://github.com/nokia/minifold
 
-__author__     = "Marc-Olivier Buob"
-__maintainer__ = "Marc-Olivier Buob"
-__email__      = "marc-olivier.buob@nokia-bell-labs.com"
-__copyright__  = "Copyright (C) 2018, Nokia"
-__license__    = "BSD-3"
+from minifold.doc_type import DocType
 
-from minifold.doc_type  import DocType
 
-def test_sort():
+def test_doc_type_sort():
     hdr = DocType.HDR
-    book  = DocType.BOOKS_AND_THESES
+    book = DocType.BOOKS_AND_THESES
     assert sorted([hdr, book]) == [book, hdr]
 
-def test_dblp():
-    from minifold.dblp      import DblpConnector
+
+def test_doc_type():
+    book = DocType.BOOKS_AND_THESES
+    assert str(book) == "Books And Theses"
+
+
+def test_doc_type_dblp():
+    from minifold.dblp import DblpConnector
     for s in [
         "conference and workshop papers",
         "conference or workshop",
@@ -29,9 +30,8 @@ def test_dblp():
     ]:
         assert DblpConnector.to_doc_type(s) != DocType.UNKNOWN
 
-def test_hal():
-    from minifold.hal       import HalConnector
+
+def test_doc_type_hal():
+    from minifold.hal import HalConnector
     for s in ["art", "comm", "report", "hdr", "couv", "patent"]:
         assert HalConnector.to_doc_type(s) != DocType.UNKNOWN
-
-

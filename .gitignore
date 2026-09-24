@@ -8,7 +8,7 @@ minifold.egg-info
 *.swp
 *.swo
 *.tar.gz
-.minifoldrc
+.coverage
+coverage.xml
 .pytest_cache
-src
 .idea

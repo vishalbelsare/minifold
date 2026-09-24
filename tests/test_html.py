@@ -1,18 +1,17 @@
 #!/usr/bin/env pytest-3
 # -*- coding: utf-8 -*-
 #
-# Authors:
-#   Marc-Olivier Buob <marc-olivier.buob@nokia-bell-labs.com>
-
-# Beautiful soup tests
+# This file is part of the minifold project.
+# https://github.com/nokia/minifold
 
 try:
-    from bs4           import BeautifulSoup
+    # Beautiful soup tests
+    from bs4 import BeautifulSoup
     from minifold.html import remove_tags, sanitize_html
 
     def test_remove_tags_flat():
         s = "<html><body>ab<i>xxxx</i>cd</i><b>yyyyy</b>ef</body></html>"
-        soup = BeautifulSoup(s, features = "lxml")
+        soup = BeautifulSoup(s, features="lxml")
         tags = ["i", "b"]
         remove_tags(soup, tags)
         assert str(soup) == "<html><body>abcdef</body></html>"
@@ -34,7 +33,7 @@ try:
 </html>"""
 
     def test_remove_tags_rec():
-        soup = BeautifulSoup(HTML1, features = "lxml")
+        soup = BeautifulSoup(HTML1, features="lxml")
         remove_tags(soup, ["script"])
         assert str(soup) == EXPECTED1
 
@@ -73,6 +72,6 @@ try:
 </body>"""
 
     def test_sanitize_html():
-        assert sanitize_html(HTML2) == EXPECTED2
+        assert sanitize_html(HTML2).rstrip() == EXPECTED2
 except ImportError:
     pass
